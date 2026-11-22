@@ -1,0 +1,607 @@
+/* Life management — memos & reminders */
+
+/* ══════════════ Memos ══════════════ */
+
+.memo-layout {
+  display: grid;
+  grid-template-columns: 318px minmax(0, 1fr);
+  gap: 16px;
+  height: clamp(540px, calc(100dvh - 252px), 920px);
+  min-height: 0;
+}
+
+.memo-list-pane,
+.memo-editor-pane {
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  backdrop-filter: var(--glass-blur);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+.memo-list-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 12px 10px;
+  border-bottom: 1px solid var(--border);
+}
+.memo-search {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+  min-width: 0;
+  height: 32px;
+  padding: 0 9px;
+  border-radius: 9px;
+  border: 1px solid var(--border);
+  background: var(--surface-muted);
+  color: var(--faint);
+}
+.memo-search:focus-within {
+  border-color: var(--accent);
+  background: var(--surface-solid);
+}
+.memo-search input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  outline: none;
+  font-size: 10.5px;
+  color: var(--text);
+}
+.memo-search input::placeholder {
+  color: var(--faint);
+}
+.memo-list-count {
+  font-size: 8.5px;
+  color: var(--faint);
+  white-space: nowrap;
+}
+
+.memo-list {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.memo-list-loading {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 22px 10px;
+  font-size: 10.5px;
+  color: var(--muted);
+}
+.memo-group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.memo-group-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 8px 3px;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+.memo-list-item {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  width: 100%;
+  padding: 8px 9px;
+  border-radius: 9px;
+  border: 1px solid transparent;
+  text-align: left;
+  transition: background 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease;
+}
+.memo-list-item:hover {
+  background: var(--surface-muted);
+}
+.memo-list-item.is-active {
+  background: var(--surface-solid);
+  border-color: var(--border);
+  box-shadow: var(--shadow-xs);
+}
+.memo-list-item-head {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.memo-list-item-head strong {
+  flex: 1;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.memo-list-item-head svg {
+  color: var(--orange);
+  flex: 0 0 auto;
+}
+.memo-list-item p {
+  font-size: 9.5px;
+  line-height: 1.55;
+  color: var(--muted);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.memo-list-item > span {
+  font-size: 8px;
+  color: var(--faint);
+}
+
+.memo-editor-pane {
+  background: var(--surface-strong);
+}
+.memo-editor-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 15px 20px 12px;
+  border-bottom: 1px solid var(--border);
+}
+.memo-title-input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  font-size: 21px;
+  font-weight: 680;
+  letter-spacing: -0.03em;
+  line-height: 1.3;
+  color: var(--text);
+  outline: none;
+  padding: 2px 0;
+}
+.memo-title-input::placeholder {
+  color: var(--faint);
+}
+.memo-editor-actions {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex: 0 0 auto;
+}
+.memo-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 20px;
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+.memo-format-buttons {
+  display: flex;
+  gap: 1px;
+}
+.memo-editor-meta {
+  margin-left: auto;
+  font-size: 8.5px;
+  color: var(--faint);
+  white-space: nowrap;
+}
+.memo-textarea {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  padding: 20px 24px 28px;
+  border: 0;
+  background: transparent;
+  resize: none;
+  outline: none;
+  font-size: 13px;
+  line-height: 1.85;
+  color: var(--text-secondary);
+}
+.memo-textarea::placeholder {
+  color: var(--faint);
+}
+.memo-preview {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 20px 26px 30px;
+}
+.memo-editor-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 7px 20px;
+  border-top: 1px solid var(--border);
+  font-size: 8.5px;
+  color: var(--faint);
+}
+
+/* ══════════════ Reminders ══════════════ */
+
+.reminder-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+.reminder-stat {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: 15px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  backdrop-filter: blur(16px);
+  box-shadow: var(--shadow-xs);
+  text-align: left;
+  transition: transform 0.18s var(--ease-spring), border-color 0.18s ease,
+    background 0.18s ease;
+}
+.reminder-stat:hover {
+  transform: translateY(-2px);
+  border-color: var(--border-strong);
+}
+.reminder-stat.is-active {
+  border-color: color-mix(in srgb, var(--accent) 32%, var(--border));
+  background: var(--accent-soft);
+}
+.reminder-stat-icon {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  flex: 0 0 34px;
+  border-radius: 10px;
+  background: var(--surface-muted);
+  color: var(--muted);
+}
+.reminder-stat-icon.tone-orange {
+  background: var(--orange-soft);
+  color: var(--orange);
+}
+.reminder-stat-icon.tone-red {
+  background: var(--red-soft);
+  color: var(--red);
+}
+.reminder-stat-icon.tone-blue {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.reminder-stat-icon.tone-green {
+  background: var(--green-soft);
+  color: var(--green);
+}
+.reminder-stat > span:last-child {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+.reminder-stat strong {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  color: var(--text);
+  font-variant-numeric: proportional-nums;
+}
+.reminder-stat small {
+  font-size: 9px;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.reminder-quick-add {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 9px 12px;
+}
+.reminder-quick-icon {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  flex: 0 0 30px;
+  border-radius: 9px;
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.reminder-quick-add input:first-of-type {
+  flex: 1;
+  min-width: 0;
+  height: 36px;
+  padding: 0 10px;
+  border-radius: 9px;
+  border: 1px solid var(--border);
+  background: var(--surface-solid);
+  font-size: 11.5px;
+  outline: none;
+}
+.reminder-quick-add input:first-of-type:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+.reminder-quick-date {
+  height: 36px;
+  padding: 0 9px;
+  border-radius: 9px;
+  border: 1px solid var(--border);
+  background: var(--surface-solid);
+  font-size: 10.5px;
+  color: var(--text-secondary);
+  outline: none;
+  flex: 0 0 auto;
+}
+
+.reminder-filter-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.category-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+.category-chip {
+  height: 27px;
+  padding: 0 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface-muted);
+  font-size: 10px;
+  color: var(--muted);
+  transition: background 0.16s ease, color 0.16s ease, border-color 0.16s ease;
+}
+.category-chip:hover {
+  color: var(--text);
+  border-color: var(--border-strong);
+}
+.category-chip.is-active {
+  background: var(--text);
+  border-color: var(--text);
+  color: var(--inverse);
+}
+
+.reminder-groups {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.reminder-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 50px;
+  font-size: 11.5px;
+  color: var(--muted);
+}
+.reminder-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.reminder-group-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 3px;
+}
+.reminder-group-head h2 {
+  font-size: 11px;
+  font-weight: 650;
+  letter-spacing: 0.02em;
+  color: var(--text-secondary);
+}
+.reminder-group-head span {
+  min-width: 17px;
+  height: 17px;
+  padding: 0 5px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  background: var(--surface-muted);
+  font-size: 8.5px;
+  color: var(--faint);
+  font-variant-numeric: tabular-nums;
+}
+.reminder-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.reminder-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  backdrop-filter: blur(14px);
+  transition: background 0.16s ease, border-color 0.16s ease, opacity 0.2s ease;
+}
+.reminder-row:hover {
+  background: var(--surface-strong);
+  border-color: var(--border-strong);
+}
+.reminder-row.is-overdue {
+  border-left: 2px solid var(--red);
+}
+.reminder-row.is-completed {
+  opacity: 0.62;
+}
+.reminder-checkbox {
+  display: grid;
+  place-items: center;
+  width: 19px;
+  height: 19px;
+  flex: 0 0 19px;
+  margin-top: 2px;
+  border-radius: 6px;
+  border: 1px solid var(--border-strong);
+  background: var(--surface-muted);
+  color: transparent;
+  transition: background 0.16s ease, border-color 0.16s ease, color 0.16s ease,
+    transform 0.16s var(--ease-spring);
+}
+.reminder-checkbox:hover {
+  border-color: var(--green);
+}
+.reminder-checkbox:active {
+  transform: scale(0.9);
+}
+.reminder-checkbox[aria-pressed="true"] {
+  background: var(--green);
+  border-color: var(--green);
+  color: #fff;
+}
+.reminder-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  text-align: left;
+}
+.reminder-title {
+  font-size: 12px;
+  font-weight: 550;
+  line-height: 1.45;
+  color: var(--text);
+  overflow-wrap: anywhere;
+}
+.reminder-row.is-completed .reminder-title {
+  text-decoration: line-through;
+  text-decoration-color: var(--faint);
+  color: var(--muted);
+}
+.reminder-notes {
+  font-size: 9.5px;
+  line-height: 1.55;
+  color: var(--muted);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.reminder-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 4px;
+}
+.reminder-due {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 9px;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+.reminder-due.is-overdue {
+  color: var(--red-ink);
+  font-weight: 600;
+}
+.reminder-delete {
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+.reminder-row:hover .reminder-delete,
+.reminder-delete:focus-visible {
+  opacity: 1;
+}
+
+@media (max-width: 1080px) {
+  .memo-layout {
+    grid-template-columns: 276px minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 860px) {
+  .memo-layout {
+    grid-template-columns: 240px minmax(0, 1fr);
+  }
+  .reminder-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 700px) {
+  .memo-layout {
+    grid-template-columns: minmax(0, 1fr);
+    height: auto;
+    min-height: 0;
+  }
+  .memo-list-pane {
+    height: 300px;
+  }
+  .memo-editor-pane {
+    min-height: 520px;
+  }
+  .memo-editor-head {
+    flex-wrap: wrap;
+    padding: 13px 16px 10px;
+  }
+  .memo-title-input {
+    font-size: 18px;
+    flex-basis: 100%;
+  }
+  .memo-editor-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+  .memo-toolbar {
+    padding: 8px 14px;
+  }
+  .memo-editor-meta {
+    width: 100%;
+    margin-left: 0;
+  }
+  .memo-textarea {
+    padding: 16px;
+  }
+  .reminder-quick-add {
+    flex-wrap: wrap;
+  }
+  .reminder-quick-add input:first-of-type {
+    flex-basis: 100%;
+  }
+  .reminder-quick-date {
+    flex: 1;
+  }
+  .reminder-filter-row {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .reminder-filter-row .segmented {
+    width: 100%;
+    overflow-x: auto;
+  }
+  .reminder-filter-row .segmented-item {
+    flex: 1;
+    justify-content: center;
+  }
+}

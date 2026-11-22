@@ -42,6 +42,8 @@
 | --- | --- |
 | ![健康](docs/screenshots/health.jpg) | ![夜览模式](docs/screenshots/workspace-dark.jpg) |
 
+完整产品展示与全部界面截图见 [SHOWCASE.md](SHOWCASE.md)。
+
 ## 快速开始
 
 环境要求：**Node.js ≥ 22.5**（使用内置 `node:sqlite`），推荐 Node 24+。本项目开发环境为 Node 26。
@@ -60,6 +62,22 @@ npm run dev
 - `npm run dev` 同时启动 Vite（5173）和本地 API（127.0.0.1:8787）。
 - 不配置智谱 API Key 也可以使用全部本地功能和 OpenAlex 检索；AI 面板会降级为直接检索真实文献。
 - 首次打开「最新论文」会实时请求 OpenAlex，可能需要几秒。
+
+### 复用这份代码
+
+```bash
+git clone <仓库地址>
+cd WorkbenchForMe
+npm install
+cp .env.example .env
+# 可选：在 .env 中填入 ZHIPU_API_KEY
+npm run dev
+```
+
+- Node.js ≥ 22.5 即可，不需要额外数据库或服务。
+- 不填 API Key 也能使用；AI 功能会自动降级为 OpenAlex 检索。
+- 数据只保存在本机 `data/`，不会随仓库上传；删除 `data/` 即可重置。
+- 如果要公开复用，建议自行补充 `LICENSE`。
 
 ### 配置智谱 AI（可选）
 
